@@ -395,6 +395,58 @@ a.tape:hover .reels i{animation:spin 1.2s linear infinite; border-style:dotted}
   radial-gradient(circle at 52% 64%, #A94337 0 9%, transparent 10%), radial-gradient(circle at 34% 66%, #89917B 0 5%, transparent 6%),
   radial-gradient(circle, #EFC76B 0 64%, #C98C43 65%)}
 @keyframes pop{0%{transform:rotate(5deg) scale(.85) rotateY(70deg)}100%{transform:rotate(-1.5deg) scale(1)}}
+
+/* ---------- layout pass: wider, denser, collage hero ---------- */
+.wrap{max-width:1240px}
+.hero{padding-block:clamp(1.8rem,4vw,3rem) 2rem}
+.hero .labels{margin-bottom:1.2rem}
+.hero-top{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,440px); gap:1rem 2.5rem; align-items:center}
+.hero h1{font-size:clamp(3rem, 8.4vw, 7.6rem)}
+.collage{position:relative; height:470px}
+.collage .portrait{position:absolute; right:34px; top:6px; width:min(255px,58%); z-index:2}
+.collage .mini{position:absolute; left:4px; bottom:28px; width:min(185px,44%); margin:0; background:#F6F0E4; padding:8px 8px 34px; transform:rotate(-7deg); box-shadow:0 14px 26px -16px rgba(0,0,0,.55); z-index:3; transition:transform .3s}
+.collage .mini:hover{transform:rotate(-2deg) scale(1.05)}
+.collage .mini::before{content:""; position:absolute; top:-10px; left:30%; width:60px; height:20px; background:var(--tape); transform:rotate(8deg)}
+.collage .mini img{display:block; width:100%; aspect-ratio:1/1; object-fit:cover}
+.collage .mini figcaption{position:absolute; left:8px; right:8px; bottom:6px; text-align:center; font-size:1.35rem; color:#252522}
+.ticket{position:absolute; right:0; bottom:0; z-index:4; display:grid; gap:.15rem; padding:.7rem 1.1rem .7rem 1.4rem; background:#D4AD73; color:#252522; transform:rotate(7deg);
+  -webkit-mask:radial-gradient(circle at 0 50%, transparent 9px, #000 9.5px) left/51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 9px, #000 9.5px) right/51% 100% no-repeat;
+          mask:radial-gradient(circle at 0 50%, transparent 9px, #000 9.5px) left/51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 9px, #000 9.5px) right/51% 100% no-repeat}
+.ticket b{font-family:var(--display); font-weight:600; font-style:italic; font-size:1.35rem; line-height:1}
+.ticket .mono{font-size:.58rem}
+.collage .scrawl{position:absolute; left:6px; top:18px; right:auto; margin:0; transform:rotate(-8deg); max-width:12ch; z-index:5}
+.collage .scrawl svg{transform:scaleX(-1) rotate(-30deg); margin-left:auto}
+.name{margin-top:1.6rem}
+.intro{grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); margin-top:1.8rem}
+.cta{margin-top:2rem}
+
+.ticker{margin-inline:calc(50% - 50vw); overflow:hidden; background:var(--rust); color:#F6F0E4; transform:rotate(-1.2deg); padding-block:.65rem; margin-block:1.5rem 2.2rem}
+.ticker-2{background:var(--sage); color:#1f201c; transform:rotate(1deg); margin-block:3rem 0}
+.ticker-track{display:flex; width:max-content; animation:tick 38s linear infinite}
+.ticker-2 .ticker-track{animation-direction:reverse; animation-duration:44s}
+.ticker span{font-family:var(--mono); font-size:.8rem; letter-spacing:.16em; text-transform:uppercase; white-space:nowrap; padding-right:.4em}
+@keyframes tick{to{transform:translateX(-50%)}}
+
+.room{padding-block:clamp(2.5rem,6vw,4.5rem) .5rem}
+.room-head{margin-bottom:2rem}
+@media (min-width:900px){
+  .room-head{grid-template-columns:auto minmax(0,1fr) minmax(0,36ch)}
+  .room-head p{grid-column:3; grid-row:1; align-self:end}
+  .room-head .hand{grid-column:2 / 4}
+}
+@media (min-width:1120px){
+  .wall{flex-wrap:nowrap; gap:0; padding-top:1.4rem}
+  .wall .pola{width:232px; margin-inline:-4px}
+}
+.closing{padding-block:clamp(3.5rem,9vw,6rem) 2.5rem; margin-top:3rem}
+.lights{background:none; border:1px solid var(--line); border-radius:20px; padding:.2rem .7rem; font:inherit; letter-spacing:inherit; text-transform:inherit; color:var(--ink)}
+.lights:hover{border-color:var(--rust); color:var(--rust)}
+@media (max-width:820px){
+  .hero-top{grid-template-columns:minmax(0,1fr)}
+  .collage{height:390px; width:min(400px,100%); justify-self:center}
+}
+@media (max-width:420px){ .collage{height:340px} .ticket b{font-size:1.1rem} }
+@media (prefers-reduced-motion:reduce){ .ticker-track{animation:none} }
 </style>
 </head>
 <body>
@@ -405,6 +457,7 @@ a.tape:hover .reels i{animation:spin 1.2s linear infinite; border-style:dotted}
 
   <div class="strip mono">
     <span><b>Shriya Shrivastav</b> · Chennai · SRM</span>
+    <span><button class="lights" id="lights" type="button" aria-pressed="false">☾ lights off</button></span>
     <span>Mood today: <button class="mood" id="mood" type="button" title="Change today's mood">full of half-ideas</button></span>
   </div>
 
@@ -412,16 +465,22 @@ a.tape:hover .reels i{animation:spin 1.2s linear infinite; border-style:dotted}
   <header class="hero">
     <canvas id="thoughts" aria-hidden="true"></canvas>
     <div class="labels mono"><span>Personal archive · Vol. 001</span><span>Est. in progress</span><span>24 repositories and counting</span><span>Click the empty space up here. Go on.</span></div>
-    <h1>A little bit of everything. <em>And somehow, all of me.</em></h1>
-    <div class="scrawl hand" aria-hidden="true">
+    <div class="hero-top">
+      <h1>A little bit of everything. <em>And somehow, all of me.</em></h1>
+      <div class="collage">
+        <figure class="portrait"><img src="img/shriya.jpg" alt="Shriya smiling in a blue saree in front of a garden wall"><figcaption class="hand">hi, it’s me</figcaption></figure>
+        <figure class="mini"><img src="img/leo-shiro.jpg" alt="Shriya with her dogs Leo and Shiro in the back of a car"><figcaption class="hand">my two bosses</figcaption></figure>
+        <div class="ticket"><span class="mono">Admit one · No. 001</span><b>Curious minds only</b><span class="mono">Valid forever</span></div>
+        <div class="scrawl hand" aria-hidden="true">
       <svg viewBox="0 0 70 50"><path d="M60 4 C40 6 20 18 14 40 M14 40 L6 30 M14 40 L24 34" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"/></svg>
       supervised by Leo &amp; Shiro 🐾
+    </div>
+      </div>
     </div>
     <div class="name"><strong>Shriya Shrivastav</strong><span>I make messy things feel simple.</span></div>
     <div class="intro">
       <blockquote>“I’ll try anything once. Then I’ll redo it until it’s perfect.”</blockquote>
       <p class="who"><span>Designer who builds the thing.</span> Asker of “but why?”. Collector of hobbies, stationery and playlists. I like the part where you find the real problem hiding inside the messy one.</p>
-      <figure class="portrait"><img src="img/shriya.jpg" alt="Shriya smiling in a blue saree in front of a garden wall"><figcaption class="hand">hi, it’s me</figcaption></figure>
     </div>
     <div class="cta">
       <a class="btn-bracket" href="#made-me">Scroll through my head ↓</a>
@@ -429,6 +488,8 @@ a.tape:hover .reels i{animation:spin 1.2s linear infinite; border-style:dotted}
       <button class="btn-shuffle" id="shuffle" type="button"><span class="die" aria-hidden="true">⚄</span> Shuffle my brain</button>
     </div>
   </header>
+
+  <div class="ticker" aria-hidden="true"><div class="ticker-track"><span>but why? ✳ I make messy things feel simple ✳ try anything once ✳ Leo &amp; Shiro approved ✳ pizza, any day ✳ currently on repeat: Jahaan ✳ 24 repositories and counting ✳ </span><span>but why? ✳ I make messy things feel simple ✳ try anything once ✳ Leo &amp; Shiro approved ✳ pizza, any day ✳ currently on repeat: Jahaan ✳ 24 repositories and counting ✳ </span></div></div>
 
   <!-- ===== ROOMS INDEX ===== -->
   <nav class="index" id="rooms" aria-label="Five rooms">
@@ -570,6 +631,8 @@ a.tape:hover .reels i{animation:spin 1.2s linear infinite; border-style:dotted}
       </div>
     </div>
   </section>
+
+  <div class="ticker ticker-2" aria-hidden="true"><div class="ticker-track"><span>kept on purpose ✳ shipping is a skill ✳ future me deserves notes ✳ still going ✳ redo it until it’s right ✳ nothing is wasted ✳ </span><span>kept on purpose ✳ shipping is a skill ✳ future me deserves notes ✳ still going ✳ redo it until it’s right ✳ nothing is wasted ✳ </span></div></div>
 
   <!-- ===== ROOM 04 ===== -->
   <section class="room" id="failures">
@@ -959,6 +1022,19 @@ a.tape:hover .reels i{animation:spin 1.2s linear infinite; border-style:dotted}
   let typed = "";
   addEventListener("keydown", e => { if (e.target.closest && e.target.closest("input,textarea")) return; typed = (typed + (e.key || "").toLowerCase()).slice(-5); if (typed === "pizza") pizzaRain(); });
   let pizzaTaps = 0; const pizzaPola = document.querySelector('[data-egg="pizza"]'); if (pizzaPola) pizzaPola.addEventListener("click", () => { if (++pizzaTaps % 3 === 0) pizzaRain(); });
+})();
+
+/* ===== lights switch ===== */
+(function(){
+  const b = document.getElementById("lights"), root = document.documentElement; if (!b) return;
+  let saved = null; try { saved = localStorage.getItem("bmom-theme"); } catch(e){}
+  const mq = matchMedia("(prefers-color-scheme: dark)");
+  const isDark = () => { const a = root.getAttribute("data-theme"); return a ? a === "dark" : mq.matches; };
+  const label = () => { const d = isDark(); b.textContent = d ? "☀ lights on" : "☾ lights off"; b.setAttribute("aria-pressed", String(d)); };
+  if (saved === "dark" || saved === "light") root.setAttribute("data-theme", saved);
+  label();
+  b.addEventListener("click", () => { const next = isDark() ? "light" : "dark"; root.setAttribute("data-theme", next); try { localStorage.setItem("bmom-theme", next); } catch(e){} label(); });
+  if (mq.addEventListener) mq.addEventListener("change", label);
 })();
 </script>
 
